@@ -103,7 +103,7 @@ mp_drawing_styles = mp.solutions.drawing_styles
 hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3, max_num_hands=2)
 
 # Label dictionary
-labels_dict = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4'}
+labels_dict = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4',5:'5'}
 
 while True:
     ret, frame = cap.read()
