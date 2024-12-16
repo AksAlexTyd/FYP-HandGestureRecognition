@@ -5,9 +5,11 @@
 # import keyboard
 # from tkinter import *
 
-# # Load the model
-# model_dict = pickle.load(open('./model.p', 'rb'))
-# model = model_dict['model']
+# # Load the models
+# model_left_dict = pickle.load(open('./modelLeft.p', 'rb'))
+# model_right_dict = pickle.load(open('./modelRight.p', 'rb'))
+# model_left = model_left_dict['model']
+# model_right = model_right_dict['model']
 
 # # Open video capture
 # cap = cv2.VideoCapture(0)
@@ -19,91 +21,460 @@
 
 # hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3, max_num_hands=2)
 
-# # Label dictionary
-# labels_dict = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4',5:'5'}
+# # Label dictionaries
+# labels_left = {5: '5',6: '6', 7: '7', 8: '8'}
+# labels_right = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4'}
 
-# # GUI
-# m = Tk()
+# # # GUI
+# root = Tk()
 
-# tk_str1 = StringVar()
-# tk_str2 = StringVar()
-# tk_str3 = StringVar()
-# tk_str4 = StringVar()
-# tk_str5 = StringVar()
-# tk_str6 = StringVar()
-# str1 = ''
-# str2 = ''
-# str3 = ''
-# str4 = ''
-# str5 = ''
-# str6 = ''
-# def submit():
-#     global str1,str2,str3,str4,str5,str6
-#     str1 = tk_str1.get()
-#     str2 = tk_str2.get()
-#     str3 = tk_str3.get()
-#     str4 = tk_str4.get()
-#     str5 = tk_str5.get()
-#     str6 = tk_str6.get()
-#     print(str1,str2,str3,str4,str5,str6)
+# options = [
+#     "",
+#     "w",
+#     "a",
+#     "s",
+#     "d"
+# ]
 
-# Label(m, text='Gesture 1 input:').grid(row=0)
-# Label(m, text='Gesture 2 input:').grid(row=1)
-# Label(m, text='Gesture 3 input:').grid(row=2)
-# Label(m, text='Gesture 4 input:').grid(row=3)
-# Label(m, text='Gesture 5 input:').grid(row=4)
-# Label(m, text='Gesture 6 input:').grid(row=5)
-# e1 = Entry(m, textvariable=tk_str1)
-# e2 = Entry(m, textvariable=tk_str2)
-# e3 = Entry(m, textvariable=tk_str3)
-# e4 = Entry(m, textvariable=tk_str4)
-# e5 = Entry(m, textvariable=tk_str5)
-# e6 = Entry(m, textvariable=tk_str6)
-# e1.grid(row=0, column=1)
-# e2.grid(row=1, column=1)
-# e3.grid(row=2, column=1)
-# e4.grid(row=3, column=1)
-# e5.grid(row=4, column=1)
-# e6.grid(row=5, column=1)
+# tk_strInputs = [
+#     StringVar(),
+#     StringVar(),
+#     StringVar(),
+#     StringVar(),
+#     StringVar(),
+#     StringVar(),
+#     StringVar(),
+#     StringVar(),
+#     StringVar()
+# ]
+# length_tk_strInputs = len(tk_strInputs)
+# for i in range(length_tk_strInputs):
+#     tk_strInputs[i].set("")
 
-# Button(m, text='Submit', command=submit).grid(row=6)
+# strInputs = [
+#     "",
+#     "",
+#     "",
+#     "",
+#     "",
+#     "",
+#     "",
+#     "",
+#     ""
+# ]
+# length_strInputs = len(strInputs)
+
+# def saveInputs():
+#     global strInputs
+
+#     for i in range(length_strInputs):
+#         strInputs[i] = tk_strInputs[i].get()
+#         print(strInputs[i])
+
+# Label(root, text='Gesture 0 input:').grid(row=0)
+# Label(root, text='Gesture 1 input:').grid(row=1)
+# Label(root, text='Gesture 2 input:').grid(row=2)
+# Label(root, text='Gesture 3 input:').grid(row=3)
+# Label(root, text='Gesture 4 input:').grid(row=4)
+# Label(root, text='Gesture 5 input:').grid(row=5)
+# Label(root, text='Gesture 6 input:').grid(row=6)
+# Label(root, text='Gesture 7 input:').grid(row=7)
+# Label(root, text='Gesture 8 input:').grid(row=8)
+# e0 = OptionMenu(root, tk_strInputs[0], *options)
+# e1 = OptionMenu(root, tk_strInputs[1], *options)
+# e2 = OptionMenu(root, tk_strInputs[2], *options)
+# e3 = OptionMenu(root, tk_strInputs[3], *options)
+# e4 = OptionMenu(root, tk_strInputs[4], *options)
+# e5 = OptionMenu(root, tk_strInputs[5], *options)
+# e6 = OptionMenu(root, tk_strInputs[6], *options)
+# e7 = OptionMenu(root, tk_strInputs[7], *options)
+# e8 = OptionMenu(root, tk_strInputs[8], *options)
+# e0.grid(row=0, column=1)
+# e1.grid(row=1, column=1)
+# e2.grid(row=2, column=1)
+# e3.grid(row=3, column=1)
+# e4.grid(row=4, column=1)
+# e5.grid(row=5, column=1)
+# e6.grid(row=6, column=1)
+# e7.grid(row=7, column=1)
+# e8.grid(row=8, column=1)
+
+# Button(root, text='Save', command=saveInputs).grid(row=9)
 
 # mainloop()
 
-# # Manage Keypresses
-# isKeyLetGo = False
+# # Keyboard
+# enableKeyboard = False
 
-# predicted_character = ''
+# def checkInput(str_left, str_right, prediction):
+#     if is_left_found:
+#         if str_left == 'w':
+#             if predicted_character_left == prediction:
+#                 keyboard.press('w')
+#             elif predicted_character_left != prediction:
+#                 keyboard.release('w')
+#         elif str_left == 'a':
+#             if predicted_character_left == prediction:
+#                 keyboard.press('a')
+#             elif predicted_character != prediction:
+#                 keyboard.release('a')
+#         elif str_left == 's':
+#             if predicted_character_left == prediction:
+#                 keyboard.press('s')
+#             elif predicted_character_left != prediction:
+#                 keyboard.release('s')
+#         elif str_left == 'd':
+#             if predicted_character_left == prediction:
+#                 keyboard.press('d')
+#             elif predicted_character_left != prediction:
+#                 keyboard.release('d')
 
-# # def checkPredictedCharacter():
+#     elif is_right_found:
+#         if str_right == 'w':
+#             if predicted_character_right == prediction:
+#                 keyboard.press('w')
+#             elif predicted_character_right != prediction:
+#                 keyboard.release('w')
+#         elif str_right == 'a':
+#             if predicted_character_right == prediction:
+#                 keyboard.press('a')
+#             elif predicted_character_right != prediction:
+#                 keyboard.release('a')
+#         elif str_right == 's':
+#             if predicted_character_right == prediction:
+#                 keyboard.press('s')
+#             elif predicted_character_right != prediction:
+#                 keyboard.release('s')
+#         elif str_right == 'd':
+#             if predicted_character_right == prediction:
+#                 keyboard.press('d')
+#             elif predicted_character_right != prediction:
+#                 keyboard.release('d')
+
+#     elif is_right_found and is_left_found:
+#         str_f = str_left + "+" + str_right
+#         if str_f == 'w+a' or str_f == 'a+w':
+#             if predicted_character_right == prediction:
+#                 keyboard.press('w+a')
+#             elif predicted_character_right != prediction:
+#                 keyboard.release('w+a')
+#         elif str_f == 'a+s' or str_f == 's+a':
+#             if predicted_character_right == prediction:
+#                 keyboard.press('a+s')
+#             elif predicted_character_right != prediction:
+#                 keyboard.release('a+s')
+#         elif str_f == 's+d' or str_f == 'd+s':
+#             if predicted_character_right == prediction:
+#                 keyboard.press('s+d')
+#             elif predicted_character_right != prediction:
+#                 keyboard.release('s+d')
+#         elif str_f == 'd+w' or str_f == 'w+d':
+#             if predicted_character_right == prediction:
+#                 keyboard.press('d+w')
+#             elif predicted_character_right != prediction:
+#                 keyboard.release('d+w')
+
+# def checkPredictedCharacter():
 # #     global isKeyLetGo
 
 # #     # hold key down implementation
-# #     if predicted_character == '5':
+# #     if predicted_character == '1':
+# #         keyboard.press('w')
+# #     elif predicted_character != '1':
+# #         keyboard.release('w')
+
+# #     if predicted_character == '2':
 # #         keyboard.press('a')
-# #     elif predicted_character != '5':
+# #     elif predicted_character != '2':
 # #         keyboard.release('a')
 
-# #     # hold key down implementation
+# #     if predicted_character == '3':
+# #         keyboard.press('s')
+# #     elif predicted_character != '3':
+# #         keyboard.release('s')
+
 # #     if predicted_character == '4':
 # #         keyboard.press('d')
 # #     elif predicted_character != '4':
 # #         keyboard.release('d')
 
-# #     if predicted_character == '3':
+# #     if predicted_character == '5':
 # #         keyboard.press('w')
-# #     elif predicted_character != '3':
+# #     elif predicted_character != '5':
 # #         keyboard.release('w')
 
-# #     if predicted_character == '2':
+# #     if predicted_character == '6':
+# #         keyboard.press('a')
+# #     elif predicted_character != '6':
+# #         keyboard.release('a')
+
+# #     if predicted_character == '7':
 # #         keyboard.press('s')
-# #     elif predicted_character != '2':
+# #     elif predicted_character != '7':
 # #         keyboard.release('s')
 
-# def checkPredictedCharacter():
-#     global isKeyLetGo
+# #     if predicted_character == '8':
+# #         keyboard.press('d')
+# #     elif predicted_character != '8':
+# #         keyboard.release('d')
+#     a = 0
 
-#     #fix parse str variable into hotkey variable
+# while True:
+#     ret, frame = cap.read()
+#     if not ret:
+#         print("Failed to grab frame. Exiting...")
+#         break
+
+#     # Mirror the frame
+#     frame = cv2.flip(frame, 1)
+
+#     H, W, _ = frame.shape
+#     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#     results = hands.process(frame_rgb)
+
+#     if results.multi_hand_landmarks and results.multi_handedness:
+#         for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
+#             data_aux = []
+#             x_ = []
+#             y_ = []
+
+#             # Get handedness label (Left or Right)
+#             hand_label = handedness.classification[0].label
+
+#             is_left_found = False
+#             is_right_found = False
+
+#             # Draw landmarks and collect data
+#             mp_drawing.draw_landmarks(
+#                 frame,
+#                 hand_landmarks,
+#                 mp_hands.HAND_CONNECTIONS,
+#                 mp_drawing_styles.get_default_hand_landmarks_style(),
+#                 mp_drawing_styles.get_default_hand_connections_style())
+
+#             for i in range(len(hand_landmarks.landmark)):
+#                 x = hand_landmarks.landmark[i].x
+#                 y = hand_landmarks.landmark[i].y
+#                 x_.append(x)
+#                 y_.append(y)
+
+#             for i in range(len(hand_landmarks.landmark)):
+#                 x = hand_landmarks.landmark[i].x
+#                 y = hand_landmarks.landmark[i].y
+#                 data_aux.append(x - min(x_))
+#                 data_aux.append(y - min(y_))
+
+#             x1 = int(min(x_) * W) - 10
+#             y1 = int(min(y_) * H) - 10
+#             x2 = int(max(x_) * W) + 10
+#             y2 = int(max(y_) * H) + 10
+
+#             # Make predictions based on hand type
+#             if hand_label == "Left":  # This will now correspond to the user's physical left hand
+#                 prediction = model_left.predict([np.asarray(data_aux)])
+#                 predicted_character = labels_left[int(prediction[0])]
+
+#                 is_left_found = True
+#                 predicted_character_left = labels_left[int(prediction[0])]
+
+#             elif hand_label == "Right":  # This will now correspond to the user's physical right hand
+#                 prediction = model_right.predict([np.asarray(data_aux)])
+#                 predicted_character = labels_right[int(prediction[0])]
+
+#                 is_right_found = True
+#                 predicted_character_right = labels_right[int(prediction[0])]
+
+#             print(f"Hand: {hand_label}, Predicted label: {predicted_character}")
+
+#             if enableKeyboard:     
+#                 for i in range(length_strInputs):
+#                     for j in range(length_strInputs):
+#                         checkInput(i, j, '0')
+#                         checkInput(i, j, '1')
+#                         checkInput(i, j, '2')
+#                         checkInput(i, j, '3')
+#                         checkInput(i, j, '4')
+#                         checkInput(i, j, '5')
+#                         checkInput(i, j, '6')
+#                         checkInput(i, j, '7')
+#                         checkInput(i, j, '8')
+
+
+#             is_left_found = False
+#             is_right_found = False
+
+#             # Draw prediction on frame
+#             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 0), 4)
+#             cv2.putText(frame, predicted_character, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3,
+#                         cv2.LINE_AA)
+#     else:
+#         # to make it so that key is released when no hand is detected
+#         predicted_character = ''
+
+#     # UI for enabled/disabled keyboard
+#     if not enableKeyboard:
+#         cv2.putText(frame, 'Keyboard disabled', (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 255, 0), 3,
+#                     cv2.LINE_AA)
+#     elif enableKeyboard:
+#         cv2.putText(frame, 'Keyboard enabled', (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 255, 0), 3,
+#                     cv2.LINE_AA)
+
+#     # Display the frame
+#     cv2.imshow('frame', frame)
+
+#     # Enable/disable keyboard on 'p'
+#     if cv2.waitKey(1) & 0xFF == ord('p'):
+#         if not enableKeyboard:
+#             enableKeyboard = True
+#         elif enableKeyboard:
+#             enableKeyboard = False
+
+#     # Quit on 'q' key
+#     if cv2.waitKey(1) & 0xFF == ord('q'):
+#         print("Quitting...")
+#         break
+
+# # Release resources
+# cap.release()
+# cv2.destroyAllWindows()
+
+import pickle
+import cv2
+import mediapipe as mp
+import numpy as np
+import keyboard
+from tkinter import *
+
+# Load the models
+model_left_dict = pickle.load(open('./modelLeft.p', 'rb'))
+model_right_dict = pickle.load(open('./modelRight.p', 'rb'))
+model_left = model_left_dict['model']
+model_right = model_right_dict['model']
+
+# Open video capture
+cap = cv2.VideoCapture(0)
+
+# Initialize Mediapipe Hands
+mp_hands = mp.solutions.hands
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
+
+hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3, max_num_hands=2)
+
+# Label dictionaries
+labels_left = {5: '5',6: '6', 7: '7', 8: '8'}
+labels_right = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4'}
+
+# # GUI
+root = Tk()
+
+options = [
+    "",
+    "w",
+    "a",
+    "s",
+    "d"
+]
+
+tk_strInputs = [
+    StringVar(),
+    StringVar(),
+    StringVar(),
+    StringVar(),
+    StringVar(),
+    StringVar(),
+    StringVar(),
+    StringVar(),
+    StringVar()
+]
+
+length_tk_strInputs = len(tk_strInputs)
+for i in range(length_tk_strInputs):
+    tk_strInputs[i].set("")
+
+strInputs = [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+]
+
+def saveInputs():
+    global strInputs
+
+    length_strInputs = len(strInputs)
+    for i in range(length_strInputs):
+        strInputs[i] = tk_strInputs[i].get()
+        print(strInputs[i])
+
+Label(root, text='Gesture 0 input:').grid(row=0)
+Label(root, text='Gesture 1 input:').grid(row=1)
+Label(root, text='Gesture 2 input:').grid(row=2)
+Label(root, text='Gesture 3 input:').grid(row=3)
+Label(root, text='Gesture 4 input:').grid(row=4)
+Label(root, text='Gesture 5 input:').grid(row=5)
+Label(root, text='Gesture 6 input:').grid(row=6)
+Label(root, text='Gesture 7 input:').grid(row=7)
+Label(root, text='Gesture 8 input:').grid(row=8)
+e0 = OptionMenu(root, tk_strInputs[0], *options)
+e1 = OptionMenu(root, tk_strInputs[1], *options)
+e2 = OptionMenu(root, tk_strInputs[2], *options)
+e3 = OptionMenu(root, tk_strInputs[3], *options)
+e4 = OptionMenu(root, tk_strInputs[4], *options)
+e5 = OptionMenu(root, tk_strInputs[5], *options)
+e6 = OptionMenu(root, tk_strInputs[6], *options)
+e7 = OptionMenu(root, tk_strInputs[7], *options)
+e8 = OptionMenu(root, tk_strInputs[8], *options)
+e0.grid(row=0, column=1)
+e1.grid(row=1, column=1)
+e2.grid(row=2, column=1)
+e3.grid(row=3, column=1)
+e4.grid(row=4, column=1)
+e5.grid(row=5, column=1)
+e6.grid(row=6, column=1)
+e7.grid(row=7, column=1)
+e8.grid(row=8, column=1)
+
+Button(root, text='Save', command=saveInputs).grid(row=9)
+
+mainloop()
+
+# Keyboard
+enableKeyboard = False
+
+def checkInput(str, strNum):
+    # unable to pass in str in keyboard functions
+    if str == 'w':
+        if predicted_character == strNum:
+            keyboard.press('w')
+        elif predicted_character != strNum:
+            keyboard.release('w')
+
+    if str == 'a':
+        if predicted_character == strNum:
+            keyboard.press('a')
+        elif predicted_character != strNum:
+            keyboard.release('a')
+
+    if str == 's':
+        if predicted_character == strNum:
+            keyboard.press('s')
+        elif predicted_character != strNum:
+            keyboard.release('s')
+
+    if str == 'd':
+        if predicted_character == strNum:
+            keyboard.press('d')
+        elif predicted_character != strNum:
+            keyboard.release('d')
+
+def checkPredictedCharacter():
+#     global isKeyLetGo
 
 #     # hold key down implementation
 #     if predicted_character == '1':
@@ -126,168 +497,26 @@
 #     elif predicted_character != '4':
 #         keyboard.release('d')
 
-#     #     if predicted_character == '1':
-#     #     keyboard.press(keyboard.Hotkey.parse(str1))
-#     # elif predicted_character != '1':
-#     #     keyboard.release(keyboard.Hotkey.parse(str1))
+#     if predicted_character == '5':
+#         keyboard.press('w')
+#     elif predicted_character != '5':
+#         keyboard.release('w')
 
-#     # if predicted_character == '2':
-#     #     keyboard.press(keyboard.Hotkey.parse(str2))
-#     # elif predicted_character != '2':
-#     #     keyboard.release(keyboard.Hotkey.parse(str2))
+#     if predicted_character == '6':
+#         keyboard.press('a')
+#     elif predicted_character != '6':
+#         keyboard.release('a')
 
-#     # if predicted_character == '3':
-#     #     keyboard.press(keyboard.Hotkey.parse(str3))
-#     # elif predicted_character != '3':
-#     #     keyboard.release(keyboard.Hotkey.parse(str3))
+#     if predicted_character == '7':
+#         keyboard.press('s')
+#     elif predicted_character != '7':
+#         keyboard.release('s')
 
-#     # if predicted_character == '4':
-#     #     keyboard.press(keyboard.Hotkey.parse(str4))
-#     # elif predicted_character != '4':
-#     #     keyboard.release(keyboard.Hotkey.parse(str4))
-
-# # Main loop
-# while True:
-#     ret, frame = cap.read()
-#     if not ret:
-#         print("Failed to grab frame. Exiting...")
-#         break
-
-#     H, W, _ = frame.shape
-#     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-#     results = hands.process(frame_rgb)
-
-#     if results.multi_hand_landmarks:
-#         for hand_landmarks in results.multi_hand_landmarks:
-#             data_aux = []
-#             x_ = []
-#             y_ = []
-
-#             # Draw landmarks and collect data
-#             mp_drawing.draw_landmarks(
-#                 frame,  # image to draw
-#                 hand_landmarks,  # model output
-#                 mp_hands.HAND_CONNECTIONS,  # hand connections
-#                 mp_drawing_styles.get_default_hand_landmarks_style(),
-#                 mp_drawing_styles.get_default_hand_connections_style())
-
-#             for i in range(len(hand_landmarks.landmark)):
-#                 x = hand_landmarks.landmark[i].x
-#                 y = hand_landmarks.landmark[i].y
-#                 x_.append(x)
-#                 y_.append(y)
-
-#             for i in range(len(hand_landmarks.landmark)):
-#                 x = hand_landmarks.landmark[i].x
-#                 y = hand_landmarks.landmark[i].y
-#                 data_aux.append(x - min(x_))
-#                 data_aux.append(y - min(y_))
-
-#             x1 = int(min(x_) * W) - 10
-#             y1 = int(min(y_) * H) - 10
-#             x2 = int(max(x_) * W) + 10
-#             y2 = int(max(y_) * H) + 10
-
-#             # Make predictions
-#             prediction = model.predict([np.asarray(data_aux)])
-#             predicted_character = labels_dict[int(prediction[0])]
-            
-#             print("Predicte label: ",predicted_character)
-
-#             checkPredictedCharacter()
-
-#             # Draw prediction on frame
-#             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 0), 4)
-#             cv2.putText(frame, predicted_character, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3,
-#                         cv2.LINE_AA)
-#     else:
-#         # to make it so that key is released when no hand is detected
-#         predicted_character = ''
-
-
-#     # Display the frame
-#     cv2.imshow('frame', frame)
-
-#     # Quit on 'q' key
-#     if cv2.waitKey(1) & 0xFF == ord('q'):
-#         print("Quitting...")
-#         break
-
-# # Release resources
-# cap.release()
-# cv2.destroyAllWindows()
-
-import pickle
-import cv2
-import mediapipe as mp
-import numpy as np
-import keyboard
-
-# Load the models
-model_left_dict = pickle.load(open('./modelLeft.p', 'rb'))
-model_right_dict = pickle.load(open('./modelRight.p', 'rb'))
-model_left = model_left_dict['model']
-model_right = model_right_dict['model']
-
-# Open video capture
-cap = cv2.VideoCapture(0)
-
-# Initialize Mediapipe Hands
-mp_hands = mp.solutions.hands
-mp_drawing = mp.solutions.drawing_utils
-mp_drawing_styles = mp.solutions.drawing_styles
-
-hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3, max_num_hands=2)
-
-# Label dictionaries
-labels_left = {5: '5',6: '6', 7: '7', 8: '8'}
-labels_right = {0: '0', 1: '1', 2: '2', 3: '3', 4: '4'}
-
-def checkPredictedCharacter():
-    global isKeyLetGo
-
-    #fix parse str variable into hotkey variable
-
-    # hold key down implementation
-    if predicted_character == '1':
-        keyboard.press('w')
-    elif predicted_character != '1':
-        keyboard.release('w')
-
-    if predicted_character == '2':
-        keyboard.press('a')
-    elif predicted_character != '2':
-        keyboard.release('a')
-
-    if predicted_character == '3':
-        keyboard.press('s')
-    elif predicted_character != '3':
-        keyboard.release('s')
-
-    if predicted_character == '4':
-        keyboard.press('d')
-    elif predicted_character != '4':
-        keyboard.release('d')
-
-    if predicted_character == '5':
-        keyboard.press('w')
-    elif predicted_character != '5':
-        keyboard.release('w')
-
-    if predicted_character == '6':
-        keyboard.press('a')
-    elif predicted_character != '6':
-        keyboard.release('a')
-
-    if predicted_character == '7':
-        keyboard.press('s')
-    elif predicted_character != '7':
-        keyboard.release('s')
-
-    if predicted_character == '8':
-        keyboard.press('d')
-    elif predicted_character != '8':
-        keyboard.release('d')
+#     if predicted_character == '8':
+#         keyboard.press('d')
+#     elif predicted_character != '8':
+#         keyboard.release('d')
+    a = 0
 
 while True:
     ret, frame = cap.read()
@@ -346,7 +575,18 @@ while True:
 
             print(f"Hand: {hand_label}, Predicted label: {predicted_character}")
 
-            checkPredictedCharacter()
+            if enableKeyboard:
+                if hand_label == 'Right':
+                    checkInput(strInputs[0], '0')
+                    checkInput(strInputs[1], '1')
+                    checkInput(strInputs[2], '2')
+                    checkInput(strInputs[3], '3')
+                    checkInput(strInputs[4], '4')
+                if hand_label == 'Left':
+                    checkInput(strInputs[5], '5')
+                    checkInput(strInputs[6], '6')
+                    checkInput(strInputs[7], '7')
+                    checkInput(strInputs[8], '8')
 
             # Draw prediction on frame
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 0), 4)
@@ -356,8 +596,23 @@ while True:
         # to make it so that key is released when no hand is detected
         predicted_character = ''
 
+    # UI for enabled/disabled keyboard
+    if not enableKeyboard:
+        cv2.putText(frame, 'Keyboard disabled', (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 255, 0), 3,
+                    cv2.LINE_AA)
+    elif enableKeyboard:
+        cv2.putText(frame, 'Keyboard enabled', (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 255, 0), 3,
+                    cv2.LINE_AA)
+
     # Display the frame
     cv2.imshow('frame', frame)
+
+    # Enable/disable keyboard on 'p'
+    if cv2.waitKey(1) & 0xFF == ord('p'):
+        if not enableKeyboard:
+            enableKeyboard = True
+        elif enableKeyboard:
+            enableKeyboard = False
 
     # Quit on 'q' key
     if cv2.waitKey(1) & 0xFF == ord('q'):
