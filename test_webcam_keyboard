@@ -598,10 +598,10 @@ while True:
 
     # UI for enabled/disabled keyboard
     if not enableKeyboard:
-        cv2.putText(frame, 'Keyboard disabled', (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 255, 0), 3,
+        cv2.putText(frame, 'Keyboard disabled press p to toggle', (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 1,
                     cv2.LINE_AA)
     elif enableKeyboard:
-        cv2.putText(frame, 'Keyboard enabled', (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 255, 0), 3,
+        cv2.putText(frame, 'Keyboard enabled press p to toggle', (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 0), 1,
                     cv2.LINE_AA)
 
     # Display the frame
