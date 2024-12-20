@@ -352,7 +352,7 @@ model_left = model_left_dict['model']
 model_right = model_right_dict['model']
 
 # Open video capture
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 # Initialize Mediapipe Hands
 mp_hands = mp.solutions.hands
