@@ -13,6 +13,9 @@ def hand_sign_recognition(model_left, model_right):
         model_left: Trained model for recognizing left-hand signs.
         model_right: Trained model for recognizing right-hand signs.
     """
+    # Handle key inputs
+    lastKeyInput = ''
+
     # Open video capture
     cap = cv2.VideoCapture(0)
 
@@ -52,6 +55,8 @@ def hand_sign_recognition(model_left, model_right):
             frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             results = hands.process(frame_rgb)
 
+            print(lastKeyInput)
+
             if results.multi_hand_landmarks and results.multi_handedness:
                 for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
                     data_aux = []
@@ -85,7 +90,11 @@ def hand_sign_recognition(model_left, model_right):
                     if hand_label == "Left":
                         predicted_label = model_left.predict([np.asarray(data_aux)])[0]
                         print(f"Left Hand Prediction: {predicted_label}")
-                        pyautogui.press(str(predicted_label))
+                        previous_label = lastKeyInput
+                        if previous_label != predicted_label:
+                            pyautogui.keyUp(str(previous_label))
+                        lastKeyInput = predicted_label
+                        pyautogui.keyDown(str(predicted_label))
 
                     elif hand_label == "Right":
                         predicted_label = model_right.predict([np.asarray(data_aux)])[0]
@@ -122,6 +131,9 @@ def hand_sign_recognition(model_left, model_right):
                             time.sleep(0.2)
                             pyautogui.rightClick()
                             print("Right Click Detected")
+            else:
+                # print("not detected")
+                pyautogui.keyUp(str(lastKeyInput))
 
             # Display the frame
             cv2.imshow(window_name, frame)

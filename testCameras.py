@@ -34,8 +34,6 @@ def hand_sign_recognition(model_left, model_right, camera_id):
 
     hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3, max_num_hands=2)
 
-    last_click_time = 0
-    double_click_interval = 0.5  # 500 ms for double click detection
 
     # Create a named window
     window_name = f'Hand Sign Recognition - Camera {camera_id}'
@@ -103,19 +101,13 @@ def hand_sign_recognition(model_left, model_right, camera_id):
                             pyautogui.moveTo(mouse_x, mouse_y)
 
                         elif predicted_label == "Left Click":
-                            current_time = time.time()
-                            if current_time - last_click_time <= double_click_interval:
-                                time.sleep(0.2)  # Slight pause for stabilization
-                                pyautogui.doubleClick()
-                                print(f"Double Click Detected (Camera {camera_id})")
-                            else:
-                                time.sleep(0.2)
-                                pyautogui.click()
-                                print(f"Left Click Detected (Camera {camera_id})")
-                            last_click_time = current_time
+            
+                            pyautogui.click()
+                            print(f"Left Click Detected (Camera {camera_id})")
+
 
                         elif predicted_label == "Right Click":
-                            time.sleep(0.2)
+                           
                             pyautogui.rightClick()
                             print(f"Right Click Detected (Camera {camera_id})")
 
